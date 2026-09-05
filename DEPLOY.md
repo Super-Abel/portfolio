@@ -14,7 +14,7 @@ git push -u origin main
 
 ## Déployer
 ```bash
-npm run deploy
+pnpm run deploy
 ```
 
 Le site sera disponible à: **https://super-abel.github.io/portfolio/**
