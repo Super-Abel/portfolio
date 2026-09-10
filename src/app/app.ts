@@ -392,7 +392,7 @@ export class App implements AfterViewInit, OnDestroy {
     {
       title: 'Nexma',
       description: 'Plateforme SaaS de gestion du travail pour les equipes : membres, postes et contrats, affectation des taches, suivi du temps, rapports quotidiens et journal d\'audit',
-      url: 'https://dash.nexma.org/sign-in',
+      url: 'https://nexma.org',
       tech: ['Next.js', 'React', 'NestJS', 'Prisma', 'PostgreSQL', 'MongoDB', 'React Native'],
       type: 'SaaS - Web & Mobile'
     },
@@ -459,6 +459,23 @@ export class App implements AfterViewInit, OnDestroy {
 
   get whatsappLink(): string {
     return `https://wa.me/${this.whatsappNumber}`;
+  }
+
+  /** Apercu (screenshot) du site distant, genere a la volee par Microlink. */
+  previewUrl(url: string): string {
+    return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`;
+  }
+
+  /** Repli si Microlink echoue : on tente thum.io, puis on masque l'apercu. */
+  onPreviewError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    const site = img.dataset['site'] ?? '';
+    if (img.dataset['stage'] !== 'fallback' && site) {
+      img.dataset['stage'] = 'fallback';
+      img.src = `https://image.thum.io/get/width/640/crop/400/${site}`;
+    } else {
+      img.closest('.project-preview')?.classList.add('is-hidden');
+    }
   }
 
   get filteredExperiences() {

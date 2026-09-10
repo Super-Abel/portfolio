@@ -137,6 +137,20 @@
     <div class="projects-grid">
       @for (project of projects; track project.title) {
         <div class="project-card">
+          @if (project.url) {
+            <a [href]="project.url" target="_blank" rel="noopener"
+               class="project-preview" [attr.aria-label]="'Ouvrir le site ' + project.title">
+              <img [src]="previewUrl(project.url)" [attr.data-site]="project.url"
+                   [alt]="'Apercu du site ' + project.title"
+                   loading="lazy" decoding="async" (error)="onPreviewError($event)" />
+              <span class="project-preview-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                  <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zm-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7H12z"/>
+                </svg>
+                Apercu en direct
+              </span>
+            </a>
+          }
           <div class="project-type">{{ project.type }}</div>
           <h3>{{ project.title }}</h3>
           <p class="project-description">{{ project.description }}</p>
