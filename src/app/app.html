@@ -137,7 +137,7 @@
     <div class="projects-grid">
       @for (project of projects; track project.title) {
         <div class="project-card">
-          @if (project.url) {
+          @if (project.url && !project.noPreview) {
             <a [href]="project.url" target="_blank" rel="noopener"
                class="project-preview" [attr.aria-label]="'Ouvrir le site ' + project.title">
               <img [src]="previewUrl(project.url)" [attr.data-site]="project.url"

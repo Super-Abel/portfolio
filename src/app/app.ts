@@ -416,14 +416,16 @@ export class App implements AfterViewInit, OnDestroy {
       description: 'Solution Fintech de paiement multi-devises',
       url: 'https://perfectpaycameroon.com/',
       tech: ['Flutter', 'FastAPI', 'Stripe', 'Docker'],
-      type: 'Fintech'
+      type: 'Fintech',
+      noPreview: true
     },
     {
       title: 'SecuredSys',
       description: 'Site web professionnel cree avec WordPress',
       url: 'https://securedsys.net/',
       tech: ['WordPress', 'PHP', 'CSS'],
-      type: 'CMS'
+      type: 'CMS',
+      noPreview: true
     }
   ];
 
