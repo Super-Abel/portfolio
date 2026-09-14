@@ -399,10 +399,17 @@ export class App implements AfterViewInit, OnDestroy {
     {
       title: 'E-Voucher Patnuc',
       description: 'Plateforme de gestion de bons electroniques avec application mobile',
-      url: 'https://evoucher.patnuc.cm/',
+      url: 'https://evoucherprod.patnuc.cm/',
       apk: 'https://evoucher.patnuc.cm/executables/3.2.8/evoucher.apk',
       tech: ['Laravel', 'Flutter', 'Playwright'],
       type: 'Web & Mobile'
+    },
+    {
+      title: 'PrixMboa',
+      description: 'Suivi collaboratif des prix des marches au Cameroun : produits de base, carburant et transport, par ville et quartier',
+      url: 'https://prixmboa.info',
+      tech: ['Flutter', 'Supabase', 'PostgreSQL', 'Riverpod'],
+      type: 'Mobile & Web'
     },
     {
       title: 'MedXe Health Center',
