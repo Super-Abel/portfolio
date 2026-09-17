@@ -122,7 +122,12 @@
           <h3>{{ category.title }}</h3>
           <div class="skill-tags">
             @for (skill of category.skills; track skill) {
-              <span class="skill-tag">{{ skill }}</span>
+              <span class="skill-tag">
+                @if (skillIconUrl(skill); as iconUrl) {
+                  <img [src]="iconUrl" [alt]="skill" loading="lazy" class="tool-icon" (error)="onSkillIconError($event)" />
+                }
+                {{ skill }}
+              </span>
             }
           </div>
         </div>

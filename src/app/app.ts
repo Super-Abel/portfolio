@@ -558,6 +558,67 @@ export class App implements AfterViewInit, OnDestroy {
     }
   }
 
+  // Nom exact de la competence -> slug devicon (icons.getbootstrap.com n'a pas
+  // tout ; devicon couvre le plus large). Pas d'entree = pas de logo pertinent
+  // (methodologies/concepts sans marque : REST API, MVC, UML, Agile...).
+  private readonly skillIcons: Record<string, string> = {
+    'Dart': 'dart/dart-original',
+    'PHP': 'php/php-original',
+    'Python': 'python/python-original',
+    'C#': 'csharp/csharp-original',
+    'JavaScript': 'javascript/javascript-original',
+    'TypeScript': 'typescript/typescript-original',
+    'Java': 'java/java-original',
+    'C++': 'cplusplus/cplusplus-original',
+    'HTML/CSS': 'html5/html5-original',
+    'Flutter': 'flutter/flutter-original',
+    'React Native': 'reactnative/reactnative-original',
+    'Node.js': 'nodejs/nodejs-original',
+    'NestJS': 'nestjs/nestjs-original',
+    'Next.js': 'nextjs/nextjs-original',
+    'Angular': 'angularjs/angularjs-original',
+    'Vue.js': 'vuejs/vuejs-original',
+    'Laravel': 'laravel/laravel-original',
+    'Symfony': 'symfony/symfony-original',
+    'CodeIgniter': 'codeigniter/codeigniter-plain',
+    'Django': 'django/django-plain',
+    'FastAPI': 'fastapi/fastapi-original',
+    'Spring Boot': 'spring/spring-original',
+    '.NET': 'dotnetcore/dotnetcore-original',
+    'TensorFlow': 'tensorflow/tensorflow-original',
+    'MySQL': 'mysql/mysql-original',
+    'PostgreSQL': 'postgresql/postgresql-original',
+    'MongoDB': 'mongodb/mongodb-original',
+    'Elasticsearch': 'elasticsearch/elasticsearch-original',
+    'Cypress': 'cypressio/cypressio-original',
+    'Playwright': 'playwright/playwright-original',
+    'Cucumber': 'cucumber/cucumber-plain',
+    'Docker': 'docker/docker-original',
+    'Jenkins': 'jenkins/jenkins-original',
+    'Terraform': 'terraform/terraform-original',
+    'Prometheus': 'prometheus/prometheus-original',
+    'Grafana': 'grafana/grafana-original',
+    'SonarQube': 'sonarqube/sonarqube-original',
+    'Git': 'git/git-original',
+    'GitLab': 'gitlab/gitlab-original',
+    'GitHub': 'github/github-original',
+    'Bitbucket': 'bitbucket/bitbucket-original',
+    'Jira': 'jira/jira-original',
+    'Confluence': 'confluence/confluence-original',
+    'Postman': 'postman/postman-original',
+    'Figma': 'figma/figma-original',
+    'Spark': 'apachespark/apachespark-original'
+  };
+
+  skillIconUrl(skill: string): string | null {
+    const path = this.skillIcons[skill];
+    return path ? `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${path}.svg` : null;
+  }
+
+  onSkillIconError(event: Event) {
+    (event.target as HTMLImageElement).style.display = 'none';
+  }
+
   get filteredExperiences() {
     const f = this.activeExperienceFilter();
     if (f === 'Tous') return this.experiences;
