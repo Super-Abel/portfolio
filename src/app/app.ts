@@ -1,6 +1,10 @@
 import { Component, signal, ViewChild, ElementRef, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 @Component({
   selector: 'app-root',
@@ -31,6 +35,12 @@ export class App implements AfterViewInit, OnDestroy {
   private gradientX = 50;
   private gradientY = 50;
 
+  private readonly prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  private readonly supportsFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  private cursorEl: HTMLElement | null = null;
+  private cursorMoveX: ((x: number) => void) | null = null;
+  private cursorMoveY: ((y: number) => void) | null = null;
+
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(e: MouseEvent) {
     this.mouse.x = e.clientX;
@@ -39,6 +49,8 @@ export class App implements AfterViewInit, OnDestroy {
     this.gradientY = (e.clientY / window.innerHeight) * 100;
     document.body.style.setProperty('--gradient-x', `${this.gradientX}%`);
     document.body.style.setProperty('--gradient-y', `${this.gradientY}%`);
+    this.cursorMoveX?.(e.clientX);
+    this.cursorMoveY?.(e.clientY);
   }
 
   @HostListener('window:resize')
@@ -53,10 +65,14 @@ export class App implements AfterViewInit, OnDestroy {
     this.initParticles();
     this.initScrollAnimations();
     this.initMagneticButtons();
+    this.initHeroToNavTransition();
+    this.initTimelineDraw();
+    this.initCustomCursor();
   }
 
   ngOnDestroy() {
     cancelAnimationFrame(this.animationId);
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
   }
 
   private initParticles() {
@@ -137,17 +153,67 @@ export class App implements AfterViewInit, OnDestroy {
   }
 
   private initScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
+    if (this.prefersReducedMotion) return;
 
-    document.querySelectorAll('.skill-card, .project-card, .education-card, .github-card').forEach(el => {
-      el.classList.add('scroll-animate');
-      observer.observe(el);
+    const targets = gsap.utils.toArray<HTMLElement>(
+      '.skill-card, .project-card, .education-card, .github-card'
+    );
+    gsap.set(targets, { autoAlpha: 0, y: 32, filter: 'blur(6px)' });
+    ScrollTrigger.batch(targets, {
+      start: 'top 88%',
+      once: true,
+      onEnter: batch => gsap.to(batch, {
+        autoAlpha: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        duration: 0.7,
+        ease: 'power3.out',
+        stagger: 0.08
+      })
+    });
+  }
+
+  /** Le nom du hero se dissout dans le logo de la nav au fil du scroll. */
+  private initHeroToNavTransition() {
+    if (this.prefersReducedMotion) return;
+    const heroName = document.querySelector<HTMLElement>('.hero .name');
+    const logo = document.querySelector<HTMLElement>('.navbar .logo');
+    if (!heroName || !logo) return;
+
+    gsap.set(logo, { autoAlpha: 0, y: -8 });
+    gsap.timeline({
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.5 }
+    })
+      .to(heroName, { scale: 0.85, y: -40, autoAlpha: 0.15, ease: 'none' }, 0)
+      .to(logo, { autoAlpha: 1, y: 0, ease: 'none' }, 0.3);
+  }
+
+  /** La ligne de la timeline Experience se dessine au fil du scroll. */
+  private initTimelineDraw() {
+    if (this.prefersReducedMotion) return;
+    const timeline = document.querySelector<HTMLElement>('.timeline');
+    if (!timeline) return;
+
+    gsap.fromTo(timeline, { '--line-progress': 0 }, {
+      '--line-progress': 1,
+      ease: 'none',
+      scrollTrigger: { trigger: timeline, start: 'top 75%', end: 'bottom 60%', scrub: 0.6 }
+    });
+  }
+
+  /** Curseur reactif : desktop uniquement, jamais sur ecran tactile. */
+  private initCustomCursor() {
+    if (this.prefersReducedMotion || !this.supportsFinePointer) return;
+    this.cursorEl = document.querySelector<HTMLElement>('.cinematic-cursor');
+    if (!this.cursorEl) return;
+
+    gsap.set(this.cursorEl, { xPercent: -50, yPercent: -50, autoAlpha: 1 });
+    this.cursorMoveX = gsap.quickTo(this.cursorEl, 'x', { duration: 0.45, ease: 'power3' });
+    this.cursorMoveY = gsap.quickTo(this.cursorEl, 'y', { duration: 0.45, ease: 'power3' });
+
+    document.querySelectorAll('a, button, .project-card, .skill-card').forEach(el => {
+      el.addEventListener('mouseenter', () => this.cursorEl?.classList.add('is-active'));
+      el.addEventListener('mouseleave', () => this.cursorEl?.classList.remove('is-active'));
     });
   }
 
@@ -195,6 +261,7 @@ export class App implements AfterViewInit, OnDestroy {
     {
       title: 'Developpeur Full-Stack Senior - HES',
       company: 'HES',
+      website: 'https://www.hesdigitalservices.com/',
       period: 'Mars 2026 - Juil. 2026',
       location: 'Rouyn-Noranda, Canada',
       mode: 'Remote',
@@ -227,6 +294,7 @@ export class App implements AfterViewInit, OnDestroy {
     {
       title: 'Developpeur Backend et Mobile PerfectPay',
       company: 'UDEV-TECHZ',
+      website: 'https://udevtechz.com/',
       period: 'Oct. 2025 - Dec. 2025',
       location: 'Douala, Cameroun',
       mode: 'Remote',
@@ -243,6 +311,7 @@ export class App implements AfterViewInit, OnDestroy {
     {
       title: 'Developpeur d\'Application Mobile',
       company: 'I-TECH',
+      website: 'https://dev.i-techsarl.com/',
       period: 'Avr. 2025 - Sept. 2025',
       location: 'Douala, Cameroun',
       mode: 'Presentiel',
@@ -288,6 +357,7 @@ export class App implements AfterViewInit, OnDestroy {
     {
       title: 'Developpeur et testeur logiciel Web / Mobile',
       company: 'AITE-Consulting',
+      website: 'https://aite-consulting.com/',
       period: 'Aout 2024 - Nov. 2024',
       location: 'Douala, Cameroun',
       mode: 'Presentiel',
@@ -421,18 +491,14 @@ export class App implements AfterViewInit, OnDestroy {
     {
       title: 'Perfect Pay Cameroon',
       description: 'Solution Fintech de paiement multi-devises',
-      url: 'https://perfectpaycameroon.com/',
       tech: ['Flutter', 'FastAPI', 'Stripe', 'Docker'],
-      type: 'Fintech',
-      noPreview: true
+      type: 'Fintech'
     },
     {
       title: 'SecuredSys',
       description: 'Site web professionnel cree avec WordPress',
-      url: 'https://securedsys.net/',
       tech: ['WordPress', 'PHP', 'CSS'],
-      type: 'CMS',
-      noPreview: true
+      type: 'CMS'
     }
   ];
 

@@ -788,6 +788,8 @@ section {
       bottom: 0;
       width: 2px;
       background: var(--gradient);
+      transform: scaleY(var(--line-progress, 1));
+      transform-origin: top;
     }
   }
 
@@ -833,6 +835,28 @@ section {
       font-weight: 600;
       display: block;
       margin-bottom: 0.25rem;
+    }
+
+    .company-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      width: fit-content;
+      transition: color 0.2s;
+
+      svg {
+        opacity: 0.6;
+        transition: opacity 0.2s, transform 0.2s;
+      }
+
+      &:hover {
+        color: var(--accent);
+
+        svg {
+          opacity: 1;
+          transform: translate(1px, -1px);
+        }
+      }
     }
 
     .period, .location {
