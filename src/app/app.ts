@@ -514,8 +514,6 @@ export class App implements AfterViewInit, OnDestroy {
     { name: 'AWS-Modern-Engineering', tech: 'C#', desc: 'Serverless AWS : Lambda, S3, DynamoDB, Rekognition' },
     { name: 'sentiment-ai', tech: 'Python', desc: 'Pipeline CI/CD 11 etapes (Jenkins) : Terraform, Prometheus/Grafana, Trivy, SonarQube, Docker' },
     { name: 'mon-vpn', tech: 'Flutter', desc: 'Application VPN mobile Flutter' },
-    { name: 'mobile-frontend-test-template', tech: 'Dart', desc: 'Template architecture mobile', stars: 7 },
-    { name: 'backend-test-template', tech: 'Dockerfile', desc: 'Template architecture backend', stars: 2 },
     { name: 'Playwright-Javascript-QA', tech: 'JavaScript', desc: 'Tests automatises QA' },
     { name: 'CI4-Elasticsearch-MySql', tech: 'PHP', desc: 'CodeIgniter 4 + Elasticsearch' },
     { name: 'angular-frontend-products-demo', tech: 'TypeScript', desc: 'Demo Angular products' },
