@@ -182,7 +182,14 @@ export class App implements AfterViewInit, OnDestroy {
 
     gsap.set(logo, { autoAlpha: 0, y: -8 });
     gsap.timeline({
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.5 }
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: '+=100%',
+        scrub: 0.5,
+        pin: true,
+        pinSpacing: true
+      }
     })
       .to(heroName, { scale: 0.85, y: -40, autoAlpha: 0.15, ease: 'none' }, 0)
       .to(logo, { autoAlpha: 1, y: 0, ease: 'none' }, 0.3);
